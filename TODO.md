@@ -44,3 +44,8 @@
 - BMR:
 
   This value is multiplied by an activity factor (generally 1.2-1.95) dependent on a person's typical levels of exercise
+
+# Possible future changes
+
+- Use cookies instead of localStorage & sessionStorage [X]
+- Store the Jwt Token in the database and use the stored token in the cookie to fetch users data [-] -> Used an api to call it each time when the website is refreshed, using the token to get the data

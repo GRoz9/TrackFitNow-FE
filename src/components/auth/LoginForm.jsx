@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation"; // Get email from URL
+
 import {
   TextField,
   FormControlLabel,
@@ -22,6 +24,7 @@ export const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -43,10 +46,11 @@ export const LoginForm = () => {
     setSuccessMessage("");
 
     try {
-      const response = await fetch("http://localhost:3000//api/auth/login", {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, rememberMe }),
+        credentials: "include",
       });
 
       const result = await response.json();
@@ -55,12 +59,8 @@ export const LoginForm = () => {
         throw new Error(result.error || "Login failed");
       }
 
-      console.log("Login successful:", result);
-      localStorage.setItem("token", result.token);
-      if (rememberMe) {
-      } else {
-        sessionStorage.setItem("token", result.token);
-      }
+      setSuccessMessage("Login successful! Redirecting...");
+      setTimeout(() => router.push("/dashboard"), 1500);
     } catch (error) {
       setErrorMessage(error.message);
     } finally {

@@ -20,11 +20,11 @@ import {
   IconButton,
 } from "@mui/material";
 
-export const ProteinTracker = () => {
+export const ProteinTracker = (props) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [protein, setProtein] = useState(15);
-  const [proteinGoal] = useState(90);
+  const [proteinGoal] = useState(props.proteinTarget);
   const [inputValue, setInputValue] = useState("");
   const [lastProteinAmount, setLastProteinAmount] = useState(0);
   const [prevProtein, setPrevProtein] = useState(15); // Store previous protein value

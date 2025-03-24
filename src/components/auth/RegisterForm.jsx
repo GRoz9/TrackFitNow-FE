@@ -21,6 +21,7 @@ export const RegisterForm = () => {
   const [loading, setLoading] = useState(false); // Track loading state
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
@@ -42,36 +43,19 @@ export const RegisterForm = () => {
     setLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-    console.log(data);
+
     try {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
+      const response = await fetch("http://localhost:8080/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, rememberMe }),
+        credentials: "include",
       });
 
-      const text = await response.text(); // Get raw response first
-      console.log("Raw text from backend:", text);
-
-      let result;
-      try {
-        result = JSON.parse(text);
-        console.log("Parsed response:", result);
-      } catch (e) {
-        throw new Error("Failed to parse JSON response");
-      }
+      const text = await response.text();
 
       if (!response.ok) {
         throw new Error(result.error || "Registration failed");
-      }
-
-      console.log("Results: ", result);
-      const token = result.token;
-      if (token) {
-        localStorage.setItem("token", token);
-        console.log("Saved token:", token);
-      } else {
-        console.error("No token received in response!");
       }
 
       setSuccessMessage("Registration successful! Redirecting...");
@@ -86,6 +70,10 @@ export const RegisterForm = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRememberChange = () => {
+    setRememberMe(!rememberMe);
   };
 
   return (
@@ -145,12 +133,17 @@ export const RegisterForm = () => {
             disabled={loading}
             sx={{ mb: 2 }}
           />
-          {/* <FormControlLabel
+          <FormControlLabel
             control={
-              <Checkbox value="remember" color="primary" disabled={loading} />
+              <Checkbox
+                value="remember"
+                color="primary"
+                disabled={loading}
+                onChange={handleRememberChange}
+              />
             }
             label="Remember me"
-          /> */}
+          />
           <FormError message={errorMessage} />
           <FormSuccess message={successMessage} />
           <Button
