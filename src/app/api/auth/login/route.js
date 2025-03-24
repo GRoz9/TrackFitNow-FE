@@ -12,6 +12,7 @@ export async function POST(req) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -23,7 +24,7 @@ export async function POST(req) {
 
     const result = await response.json();
 
-    return NextResponse.json({ token: result.token }, { status: 200 });
+    return NextResponse.json({ message: "Login successful" }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Something went wrong" },

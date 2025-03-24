@@ -56,8 +56,7 @@ export const ProfileSetupForm = () => {
     setLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-    const token = localStorage.getItem("token");
-    console.log("Token: ", token);
+    console.log(data);
 
     try {
       const response = await fetch(
@@ -66,9 +65,9 @@ export const ProfileSetupForm = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token
           },
           body: JSON.stringify(data),
+          credentials: "include",
         }
       );
 

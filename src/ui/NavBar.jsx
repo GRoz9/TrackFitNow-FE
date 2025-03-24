@@ -6,22 +6,13 @@ import MobileMenuButton from "@/components/navbarComponents/MobileMenuButton";
 
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import { Profile } from "@/components/profileComponents/Profile";
 
 export const NavBar = () => {
-  //   const [userSignedIn, setUserSignedIn] = useState(false);
   return (
     <nav className="bg-sky-500">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between mb-16">
-          {/* Mobile/Hamburger Menu */}
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-            {/* Mobile menu button - Temporarly disabled to test out bottom nav instead of hamburger nav*/}
-            {/* <MobileMenuButton
-            currentRoute={currentRoute}
-            isToggleNavBar={toggleNavBar}
-            funcMobileMenu={mobileMenuToggle}
-            /> */}
-          </div>
           {/* Nav Bar */}
           <div className="flex flex-1 items-center">
             <Link href="/dashboard">
@@ -31,12 +22,7 @@ export const NavBar = () => {
             </Link>
             <div className="hidden sm:flex sm:w-full sm:justify-center">
               {/* Nav Links */}
-              {/* Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" */}
               <div className="flex space-x-4 cursor-pointer">
-                {/* <NavBarLinks name="Dashboard" />
-                <NavBarLinks name="Weight" />
-                <NavBarLinks name="Calories" />
-                <NavBarLinks name="Water" /> */}
                 <Stack spacing={2} direction="row">
                   <Link href="/dashboard">
                     <Button
@@ -63,29 +49,12 @@ export const NavBar = () => {
                     </Button>
                   </Link>
                 </Stack>
-                {/* <NavLinks
-                  class="rounded-md px-3 py-2 text-sm font-medium"
-                  currentRoute={currentRoute}
-                  name="Discounts"
-                  nameRounte="/Discounts"
-                /> */}
               </div>
             </div>
           </div>
-          {/* Login/SignUp Future */}
+          {/* Account Future */}
           <div className="relative">
-            <Button variant="text" sx={{ color: `primary.contrastText` }}>
-              Log In
-            </Button>
-
-            {/* {usersignedIn ? (
-              <SignedIn
-                isProfileToggled={toggleProfileMenu}
-                ProfileDropDown={profileDropDown}
-              />
-            ) : (
-              <LogIn />
-            )} */}
+            <Profile />
           </div>
         </div>
       </div>

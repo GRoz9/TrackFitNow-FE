@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  // const token = localStorage.getItem("token");
+  console.log("req", req);
   try {
     const profileData = await req.json();
 
@@ -11,6 +11,7 @@ export async function POST(req) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(profileData),
+      credentials: "include",
     });
 
     if (!response.ok) {
