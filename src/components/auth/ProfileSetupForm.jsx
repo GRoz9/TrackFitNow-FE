@@ -13,14 +13,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProfileSchema } from "../../../schema/profileSchema";
 import { CardWrapper } from "./CardWrapper";
-import { useRouter, useSearchParams } from "next/navigation"; // Get email from URL
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormError } from "../formComponents/FormError";
 import { FormSuccess } from "../formComponents/FormSuccess";
 
 export const ProfileSetupForm = () => {
   const apiUrl = process.env.BACKEND_API_URL;
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -34,29 +33,39 @@ export const ProfileSetupForm = () => {
     "Very Active": "Hard exercise or a physical job",
   };
 
-  const form = useForm({
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(ProfileSchema),
     defaultValues: {
       age: "",
       height: "",
       weight: "",
+      targetWeight: "",
       gender: "",
       activityLevel: "",
       fitnessGoal: "",
+      weightLossLevel: "",
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = form;
+  const fitnessGoal = watch("fitnessGoal");
+
+  useEffect(() => {
+    if (fitnessGoal !== "Lose Weight") {
+      setValue("weightLossLevel", "None"); // Clear value when switching goal
+    }
+  }, [fitnessGoal, setValue]);
 
   const onSubmit = async (data) => {
+    console.log(data);
     setLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-    console.log(data);
 
     try {
       const response = await fetch(
@@ -70,6 +79,8 @@ export const ProfileSetupForm = () => {
           credentials: "include",
         }
       );
+      console.log("DataJSON", JSON.stringify(data));
+      console.log("response", response);
 
       const result = await response.text();
       if (!response.ok) throw new Error(result.error || "Profile setup failed");
@@ -85,12 +96,14 @@ export const ProfileSetupForm = () => {
 
   return (
     <CardWrapper
-      headerTitle="Sign up"
-      headerLabel="Create an account"
-      backButtonLabel="Already have an account?"
+      headerTitle="Profile Setup"
+      headerLabel="Account Settings"
+      backButtonLabel="Go back?"
+      backButtonHref="/"
+      showSignUpLink
     >
       <Box sx={{ mt: 4 }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <TextField
             label="Age"
             type="number"
@@ -136,10 +149,30 @@ export const ProfileSetupForm = () => {
             inputProps={{
               inputMode: "decimal",
               step: "0.1",
+            }}
+          />
+
+          <TextField
+            label="Target Weight (kg)"
+            type="number"
+            {...register("targetWeight")}
+            error={!!errors.targetWeight}
+            helperText={
+              errors.targetWeight?.message
+                ? errors.targetWeight?.message
+                : "Leave to use ideal weight"
+            }
+            fullWidth
+            disabled={loading}
+            sx={{ mb: 2 }}
+            inputProps={{
+              inputMode: "decimal",
+              step: "0.1",
               min: 30,
               max: 300,
             }}
           />
+
           <TextField
             select
             label="Gender"
@@ -188,6 +221,30 @@ export const ProfileSetupForm = () => {
             <MenuItem value="Gain Muscle">Gain Muscle</MenuItem>
             <MenuItem value="Stay Fit">Stay Fit</MenuItem>
           </TextField>
+          {fitnessGoal === "Lose Weight" && (
+            <TextField
+              select
+              label="Weight Loss Intensity"
+              {...register("weightLossLevel")}
+              error={!!errors.weightLossLevel}
+              helperText={errors.weightLossLevel?.message}
+              fullWidth
+              disabled={loading}
+              sx={{ mb: 2 }}
+            >
+              <MenuItem value="Mild Weight Loss">Mild Weight Loss</MenuItem>
+              <MenuItem value="Moderate Weight Loss">
+                Moderate Weight Loss
+              </MenuItem>
+              <MenuItem value="Significant Weight Loss">
+                Significant Weight Loss
+              </MenuItem>
+              <MenuItem value="Extreme Weight Loss">
+                Extreme Weight Loss
+              </MenuItem>
+            </TextField>
+          )}
+
           <FormError message={errorMessage} />
           <FormSuccess message={successMessage} />
           <Button

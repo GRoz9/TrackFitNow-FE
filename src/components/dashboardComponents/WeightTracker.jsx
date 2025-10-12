@@ -1,101 +1,192 @@
 "use client";
 import React from "react";
-import { WeightGraph } from "../Trackers_GraphsComponents/WeightGraph";
-
+import { Line } from "react-chartjs-2";
+import { useChartSetup } from "@/app/lib/ChartSetup";
 import Box from "@mui/material/Box";
-
 import { BarTracker } from "../Trackers_GraphsComponents/TrackerBar";
 
-export const WeightTracker = () => {
-  const [progress, setProgress] = React.useState(10);
-  const [timeProgress, setTimeProgress] = React.useState(25);
+export const WeightTracker = (props) => {
+  useChartSetup();
+  const { profile } = props;
+  console.log("Weight", props);
 
-  const labels = ["January", "February", "March", "April", "May", "June"];
+  let weeklyLogs = [
+    { logDate: "2025-09-08", weight: 91.0 },
+    { logDate: "2025-09-09", weight: 90.8 },
+    { logDate: "2025-09-10", weight: 90.9 },
+    { logDate: "2025-09-11", weight: 90.7 },
+    { logDate: "2025-09-12", weight: 90.6 },
+    { logDate: "2025-09-13", weight: 90.4 },
+    { logDate: "2025-09-14", weight: 90.5 },
+    { logDate: "2025-09-15", weight: -1 },
+    { logDate: "2025-09-16", weight: 90.2 },
+    { logDate: "2025-09-17", weight: 90.1 },
+    { logDate: "2025-09-18", weight: 90.0 },
+    { logDate: "2025-09-19", weight: 89.9 },
+    { logDate: "2025-09-20", weight: 89.8 },
+    { logDate: "2025-09-21", weight: 89.7 },
+    { logDate: "2025-09-22", weight: 89.8 },
+    { logDate: "2025-09-23", weight: 89.6 },
+    { logDate: "2025-09-24", weight: -1 },
+    { logDate: "2025-09-25", weight: 89.4 },
+    { logDate: "2025-09-26", weight: 89.3 },
+    { logDate: "2025-09-27", weight: 89.2 },
+    { logDate: "2025-09-28", weight: 89.0 },
+    { logDate: "2025-09-29", weight: 88.9 },
+    { logDate: "2025-09-30", weight: 88.8 },
+    { logDate: "2025-10-01", weight: 88.7 },
+    { logDate: "2025-10-02", weight: 88.6 },
+    { logDate: "2025-10-03", weight: 88.5 },
+    { logDate: "2025-10-04", weight: 88.4 },
+    { logDate: "2025-10-05", weight: 88.3 },
+    { logDate: "2025-10-06", weight: -1 },
+    { logDate: "2025-10-07", weight: 88.2 },
+    { logDate: "2025-10-11", weight: 88.1 },
+  ];
+
+  // Sort and filter logs (skip missing weights)
+  const sortedLogs = [...weeklyLogs]; //.reverse();
+  const filteredLogs = sortedLogs.filter((log) => log.weight > 0);
+
+  const labels = filteredLogs.map((log) =>
+    new Date(log.logDate).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+    })
+  );
+
+  const weightValues = filteredLogs.map((log) => log.weight);
+
+  // Create target line assuming a 90-day plan
+  const totalDays = 90;
+  const dailyChange =
+    (profile.startingWeight - profile.targetWeight) / totalDays;
+
+  const targetLine = sortedLogs.map(
+    (_, i) => weightValues[0] - dailyChange * i
+  );
+
+  // --- Average Weekly Weight Loss Calculation ---
+  let avgWeeklyLoss = null;
+  if (filteredLogs.length > 1) {
+    const startWeight = filteredLogs[0].weight;
+    const latestWeight = filteredLogs[filteredLogs.length - 1].weight;
+
+    const startDate = new Date(filteredLogs[0].logDate);
+    const latestDate = new Date(filteredLogs[filteredLogs.length - 1].logDate);
+
+    const diffDays = (latestDate - startDate) / (1000 * 60 * 60 * 24);
+
+    if (diffDays > 0) {
+      avgWeeklyLoss = ((startWeight - latestWeight) / diffDays) * 7;
+    }
+  }
+
+  // --- Chart Data ---
   const data = {
-    labels: labels,
+    labels,
     datasets: [
       {
-        label: "Actual Weight Loss",
-        backgroundColor: "#0ea5e9",
-        borderColor: "#0ea5e9",
-        data: [95, 94.5, 94, 93.8, 93, 92.5, 92],
+        label: "Weight",
+        data: weightValues,
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        tension: 0.3,
+        fill: true,
+        pointRadius: 4,
       },
       {
-        label: "Expected Weight Loss",
-        data: [
-          95, 94.2, 93.4, 92.6, 91.8, 91, 90.2, 89.4, 88.6, 87.8, 87, 86.2,
-          85.5, 85,
-        ],
-        borderColor: "red",
-        borderDash: [5, 5],
+        label: "Target",
+        data: targetLine,
         fill: false,
-        tension: 0.2,
+        borderColor: "#22c55e",
+        borderDash: [5, 5],
+        tension: 0.3,
+        pointRadius: 2,
+      },
+      {
+        label: "Goal",
+        data: Array(sortedLogs.length).fill(profile.targetWeight),
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderDash: [5, 5],
+        pointRadius: 0,
       },
     ],
   };
 
-  // The extra info is messign with the sapcing and the width
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: false,
+        suggestedMin: Math.min(...weightValues) - 2,
+        suggestedMax: Math.max(...weightValues) + 2,
+      },
+      x: {
+        ticks: {
+          maxTicksLimit: window.innerWidth < 640 ? 10 : 10,
+        },
+      },
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (context) => `Weight: ${context.parsed.y.toFixed(1)} kg`,
+        },
+      },
+      // legend: {
+      //   display: window.innerWidth >= 640,
+      // },
+    },
+  };
+
   return (
-    <div className="flex flex-col bg-cyan-100 shadow-xl rounded-xl w-full h-full gap-4">
-      <WeightGraph data={data} />
-      <div className="max-lg:m-2 m-4 gap-8 flex flex-col h-full justify-center">
-        <h1 className="text-center">Current Statisctics</h1>
-        <Box className="flex flex-col gap-4" sx={{ width: "100%" }}>
+    <div className="flex flex-col bg-cyan-100 shadow-xl rounded-2xl w-full h-full p-3 sm:p-4 gap-6">
+      {/* Graph */}
+      <div className="w-full h-[300px] sm:h-[400px]">
+        <div className="h-full">
+          <Line data={data} options={options} />
+        </div>
+      </div>
+
+      {/* Statistics */}
+      <div className="flex flex-col gap-4">
+        <h1 className="text-center font-semibold text-lg">Statistics</h1>
+
+        <Box className="flex flex-col gap-4 w-full">
           <BarTracker
-            labels={["Progress"]}
-            progressDate={{ current: 25 }}
-            sx={{ height: 5, borderRadius: 5 }}
-          />
-          <BarTracker
-            labels={["Time"]}
-            progressDate={{ current: 35 }}
-            sx={{ height: 5, borderRadius: 5 }}
+            labels={["Progress", "Kg"]}
+            progressDate={{
+              start: profile.startingWeight,
+              current: profile.weight,
+              goal: profile.targetWeight,
+              percentage: true,
+            }}
           />
         </Box>
 
-        {/* <hr className="border-t-2 border-sky-500 border-gray-600 " /> */}
+        {/* Stats Summary */}
+        <div className="flex flex-wrap justify-between text-center text-sm sm:text-base mt-4">
+          <div className="flex-1 min-w-[100px]">
+            <p className="font-medium">You Lost</p>
+            <p>{(profile.startingWeight - profile.weight).toFixed(1)} kg</p>
+          </div>
 
-        <div className="flex justify-between text-center">
-          <h1>
-            You Lost<br></br>4.4Kg
-          </h1>
-          <h1>
-            Remaining<br></br>5.1Kg
-          </h1>
-          <h1>
-            Avg Weekly Lose<br></br>
-            {(0.1 * 7).toFixed(1)}Kg
-          </h1>
+          <div className="flex-1 min-w-[100px]">
+            <p className="font-medium">Remaining</p>
+            <p>{(profile.weight - profile.targetWeight).toFixed(1)} kg</p>
+          </div>
+
+          <div className="flex-1 min-w-[100px]">
+            <p className="font-medium">Weekly Avg</p>
+            <p>
+              {avgWeeklyLoss !== null
+                ? `${avgWeeklyLoss.toFixed(1)} kg/week`
+                : "- kg"}
+            </p>
+          </div>
         </div>
-
-        {/* <div className="flex justify-between text-center">
-            <h1>
-              Body Fat<br></br>21.3%
-            </h1>
-            <h1>
-              Average Daily Lose<br></br>0.1Kg
-            </h1>
-            <h1>
-              Average Weekly Lose<br></br>
-              {(0.1 * 7).toFixed(1)}Kg
-            </h1>
-          </div>
-          <div className="flex justify-evenly mx-4">
-            <h1>BMI: 27.4</h1>
-            <h1>Overweight</h1>
-          </div>
-          <div className="flex justify-between text-center">
-            <h1>
-              Remaning<br></br>4.4Kg
-            </h1>
-            <h1>
-              Average Daily Lose<br></br>0.1Kg
-            </h1>
-            <h1>
-              Average Weekly Lose<br></br>
-              {(0.1 * 7).toFixed(1)}Kg
-            </h1>
-          </div> */}
       </div>
     </div>
   );

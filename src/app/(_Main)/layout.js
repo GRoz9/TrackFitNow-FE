@@ -7,7 +7,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../ui/Theme";
 
 import NavBar from "../../ui/NavBar";
-import { Footer } from "../../ui/Footer";
 import BottomNav from "../../ui/BottomNav";
 
 export const metadata = {
@@ -24,9 +23,6 @@ export default function DashboardLayout({ children }) {
             <NavBar />
           </nav>
           {children}
-          <footer>
-            <Footer />
-          </footer>
           <footer className="sm:hidden">
             <BottomNav />
           </footer>

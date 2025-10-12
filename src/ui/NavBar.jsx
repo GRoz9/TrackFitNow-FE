@@ -12,7 +12,7 @@ export const NavBar = () => {
   return (
     <nav className="bg-sky-500">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between mb-16">
+        <div className="relative flex h-16 items-center justify-between mb-14">
           {/* Nav Bar */}
           <div className="flex flex-1 items-center">
             <Link href="/dashboard">
@@ -40,12 +40,20 @@ export const NavBar = () => {
                       Weight
                     </Button>
                   </Link>
-                  <Link href="/dashboard">
+                  <Link href="/calories">
                     <Button
                       variant="text"
                       sx={{ color: `primary.contrastText` }}
                     >
                       Calories
+                    </Button>
+                  </Link>
+                  <Link href="/history">
+                    <Button
+                      variant="text"
+                      sx={{ color: `primary.contrastText` }}
+                    >
+                      History
                     </Button>
                   </Link>
                 </Stack>

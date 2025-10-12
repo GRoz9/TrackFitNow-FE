@@ -11,18 +11,29 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/user/me", {
-          method: "GET",
-          credentials: "include",
-        });
+        const userProfileResponse = await fetch(
+          "http://localhost:8080/api/user/me",
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
-        if (!response.ok) {
+        const weeklyLogsResponse = await fetch(
+          "http://localhost:8080/api/logs/weeklyLogs",
+          {
+            method: "GET",
+            credentials: "include", // cookie-based auth
+          }
+        );
+
+        if (!userProfileResponse.ok)
           throw new Error("Failed to fetch user data");
-        }
 
-        const data = await response.json();
-        // console.log("Data contex", data);
-        setUser(data);
+        const userProfileData = await userProfileResponse.json();
+        const weeklyLogs = await weeklyLogsResponse.json();
+
+        setUser({ UserProfile: userProfileData, WeeklyLogs: weeklyLogs });
       } catch (err) {
         setError(err.message);
       } finally {
