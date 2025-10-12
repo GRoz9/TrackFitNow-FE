@@ -1,9 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// import "@/app/lib/ChartSetup";
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "@/ui/Theme";
+import { Footer } from "@/ui/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +28,12 @@ export default function RootLayout({ children }) {
       <AppRouterCacheProvider>
         <ThemeProvider theme={theme}>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
           >
-            {children}
+            <main className="flex-1">{children}</main>
+            <footer className="bg-sky-500 text-white mt-14 max-sm:pb-14">
+              <Footer />
+            </footer>
           </body>
         </ThemeProvider>
       </AppRouterCacheProvider>

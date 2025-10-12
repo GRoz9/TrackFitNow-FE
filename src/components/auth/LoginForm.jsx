@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation"; // Get email from URL
 
 import {
   TextField,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
   FormControlLabel,
+  FormControl,
+  FormHelperText,
   Checkbox,
   Button,
   Box,
@@ -18,11 +24,15 @@ import { CardWrapper } from "./CardWrapper";
 import { FormError } from "../formComponents/FormError";
 import { FormSuccess } from "../formComponents/FormSuccess";
 
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 export const LoginForm = () => {
   // const apiUrl = process.env.BACKEND_API_URL;
   const [loading, setLoading] = useState(false); // Track loading state
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
@@ -94,6 +104,16 @@ export const LoginForm = () => {
     }
   };
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleMouseUpPassword = (event) => {
+    event.preventDefault();
+  };
+
   // const handleCredentialsSignIn = async (e) => {
   //   e.preventDefault();
   //   const formData = new FormData(e.target);
@@ -136,18 +156,44 @@ export const LoginForm = () => {
             disabled={loading} // Disable field when loading
             sx={{ mb: 2 }}
           />
-          <TextField
-            label="Password"
-            type="password"
-            placeholder="••••••"
-            autoComplete="current-password"
-            {...register("password")}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            fullWidth
-            disabled={loading} // Disable field when loading
+
+          <FormControl
             sx={{ mb: 2 }}
-          />
+            variant="outlined"
+            fullWidth
+            error={!!errors.password}
+          >
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
+            <OutlinedInput
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••"
+              autoComplete="new-password"
+              {...register("password")}
+              disabled={loading}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={
+                      showPassword
+                        ? "hide the password"
+                        : "display the password"
+                    }
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    onMouseUp={handleMouseUpPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            <FormHelperText>{errors.password?.message}</FormHelperText>
+          </FormControl>
+
           <FormControlLabel
             control={
               <Checkbox

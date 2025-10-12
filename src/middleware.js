@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import {
   publicRoutes,
   authRoutes,
+  protectedRoutes,
+  restrictedRoutes,
   apiAuthPrefix,
   DEFAULT_LOGIN_REDIRECT,
 } from "./routes";
@@ -12,21 +14,27 @@ export function middleware(req) {
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
+  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isProtectedRoute = protectedRoutes.includes(nextUrl.pathname);
 
+  // Skip API Auth Routes
   if (isApiAuthRoute) {
-    return null;
+    return NextResponse.next();
   }
 
-  if (isAuthRoutes) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT), nextUrl);
-    }
-    return null;
+  // Prevent logged-in users from accessing login/register/profile-setup
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
   }
 
-  if (!isLoggedIn && !isPublicRoute) {
-    return NextResponse.redirect(new URL("/auth/login", nextUrl));
+  // Prevent non-logged-in users from accessing protected routes
+  if (isProtectedRoute && !isLoggedIn) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  // Redirect to login if not public and not logged in
+  if (!isLoggedIn && !isPublicRoute && !isAuthRoute) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
   return NextResponse.next();

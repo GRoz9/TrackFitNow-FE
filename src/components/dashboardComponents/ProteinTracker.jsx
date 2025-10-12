@@ -5,6 +5,8 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 
+import { UpdateProteinAPI } from "@/app/api/Protein/ProteinAPI";
+
 import {
   Dialog,
   DialogActions,
@@ -21,13 +23,16 @@ import {
 } from "@mui/material";
 
 export const ProteinTracker = (props) => {
+  // console.log("Pro", props);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [protein, setProtein] = useState(15);
+  const [protein, setProtein] = useState(props.weeklyLogs[0].proteinIntake);
   const [proteinGoal] = useState(props.proteinTarget);
   const [inputValue, setInputValue] = useState("");
   const [lastProteinAmount, setLastProteinAmount] = useState(0);
-  const [prevProtein, setPrevProtein] = useState(15); // Store previous protein value
+  const [prevProtein, setPrevProtein] = useState(
+    props.weeklyLogs[0].proteinIntake
+  );
 
   const dialogTypeRef = useRef(null);
   const lastActionType = useRef("");
@@ -66,14 +71,15 @@ export const ProteinTracker = (props) => {
     if (!inputValue) return;
 
     const enteredProtein = parseInt(inputValue, 10);
-    setPrevProtein(protein); // Store current protein before updating
+    const newProteinAmount =
+      dialogTypeRef.current === "add"
+        ? protein + enteredProtein
+        : enteredProtein;
 
-    setProtein((prev) => {
-      return dialogTypeRef.current === "add"
-        ? Math.min(prev + enteredProtein, proteinGoal)
-        : Math.min(enteredProtein, proteinGoal);
-    });
+    setPrevProtein(protein); // store old value
+    setProtein(newProteinAmount); // update state immediately
 
+    UpdateProteinAPI(newProteinAmount); // now this works
     showSnackbar(enteredProtein, dialogTypeRef.current);
     closeDialog();
   };
@@ -102,6 +108,7 @@ export const ProteinTracker = (props) => {
           >
             <AddIcon />
           </Fab>
+
           <Fab aria-label="edit" onClick={() => openDialog("edit")}>
             <EditIcon />
           </Fab>

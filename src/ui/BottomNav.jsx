@@ -8,12 +8,13 @@ import Paper from "@mui/material/Paper";
 import SpaceDashboardOutlinedIcon from "@mui/icons-material/SpaceDashboardOutlined";
 import MonitorWeightOutlinedIcon from "@mui/icons-material/MonitorWeightOutlined";
 import LocalDiningOutlinedIcon from "@mui/icons-material/LocalDiningOutlined";
+import HistoryIcon from "@mui/icons-material/History";
 
 export default function BottomNav() {
   const [value, setValue] = React.useState(0);
 
   return (
-    <Box sx={{ pb: 7 }}>
+    <Box>
       <Paper
         sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
         elevation={3}
@@ -41,7 +42,13 @@ export default function BottomNav() {
             label="Calories"
             icon={<LocalDiningOutlinedIcon />}
             component={Link}
-            href="/dashboard"
+            href="/calories"
+          />
+          <BottomNavigationAction
+            label="History"
+            icon={<HistoryIcon />}
+            component={Link}
+            href="/history"
           />
         </BottomNavigation>
       </Paper>

@@ -48,4 +48,25 @@
 # Possible future changes
 
 - Use cookies instead of localStorage & sessionStorage [X]
-- Store the Jwt Token in the database and use the stored token in the cookie to fetch users data [-] -> Used an api to call it each time when the website is refreshed, using the token to get the data
+- Store the Jwt Token in the database and use the stored token in the cookie to fetch users data [-] -> Used an api to call it each time when the website is refreshed, using the token to get the data [X]
+
+# ProfileSetup Info Addition:
+
+- New field ->
+
+  - weightLose (Mild weight lose [2], weight lose [3], extreme weight lose [4])  
+    Maintenance * (1-0.11*weightLoseNumber) [X] (Partially complete, still need to change the backend to account for front end changes regarding the field)
+  - add MaintainWeight(CalorieMaintainceWeight) to replace Maintenance:
+  - or Bmr entrirly and hard code calculation on front end using just bmr + activity level + weight lose type [???]
+
+- Change the weight to turn it into a hashmap with key: date value: weight(kg)
+
+- Change the calories to turn it into a hashmap with key: date value: Calories(Kcal)
+
+- Add a new field for currentProteinLevel which resets everyday to 0, or also turn it into a hashmap with same key
+
+- possibly something else cant remember!
+
+# Potential Problems:
+
+- When in Profile setup, the Go back? button may cause issues. I need to be able to remove the token and either delete the user or check if the user has a profile setup and if they dont only allow them to access default route or profile set up route.
