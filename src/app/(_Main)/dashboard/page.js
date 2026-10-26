@@ -1,9 +1,9 @@
 "use client";
 import { useUser } from "../context/UserContext";
-import { WeightTracker } from "../../../components/dashboardComponents/WeightTracker";
+import { WeightTracker } from "../../../components/dashboardComponents/WeightTrackerDash";
 
-import { ProteinTracker } from "../../../components/dashboardComponents/ProteinTracker";
-import { CalorieTracker } from "../../../components/dashboardComponents/CalorieTracker";
+import { ProteinTracker } from "../../../components/dashboardComponents/ProteinTrackerDash";
+import { CalorieTracker } from "../../../components/dashboardComponents/CalorieTrackerDash";
 import Skeleton from "@mui/material/Skeleton";
 
 export default function Home() {
@@ -92,7 +92,7 @@ export default function Home() {
           <CalorieTracker
             maintenance={user?.UserProfile?.maintenance}
             weightLossLevel={user?.UserProfile?.weightLossLevel}
-            weeklyLogs={user?.WeeklyLogs} // optional: if you want to pass full logs
+            weeklyLogs={user?.WeeklyLogs.slice(0, 7)} // optional: if you want to pass full logs
           />
 
           <ProteinTracker

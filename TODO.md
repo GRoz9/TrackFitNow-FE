@@ -14,7 +14,6 @@
     - Female: 53.1 kg + 1.36 kg per inch over 5 feet
 
 - - Body fat percentage (BMI Method):
-
     - Body fat percentage (BFP) formula for adult males:  
       BFP = 1.20 × BMI + 0.23 × Age - 16.2
 
@@ -53,7 +52,6 @@
 # ProfileSetup Info Addition:
 
 - New field ->
-
   - weightLose (Mild weight lose [2], weight lose [3], extreme weight lose [4])  
     Maintenance * (1-0.11*weightLoseNumber) [X] (Partially complete, still need to change the backend to account for front end changes regarding the field)
   - add MaintainWeight(CalorieMaintainceWeight) to replace Maintenance:
@@ -70,3 +68,7 @@
 # Potential Problems:
 
 - When in Profile setup, the Go back? button may cause issues. I need to be able to remove the token and either delete the user or check if the user has a profile setup and if they dont only allow them to access default route or profile set up route.
+
+# Inputing Weight Issue:
+
+- When the user inputs their weight or a value when they switch tabs in the nav bar the data isnt updated as it still uses the inital data fetched from the DB

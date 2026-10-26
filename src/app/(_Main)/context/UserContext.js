@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
         );
 
         const weeklyLogsResponse = await fetch(
-          "http://localhost:8080/api/logs/weeklyLogs",
+          "http://localhost:8080/api/logs/LogsDateRange?range=90",
           {
             method: "GET",
             credentials: "include", // cookie-based auth
