@@ -6,7 +6,7 @@ import MobileMenuButton from "@/components/navbarComponents/MobileMenuButton";
 
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import { Profile } from "@/components/profileComponents/Profile";
+import { ProfileMenu } from "@/components/profileComponents/ProfileMenu";
 
 export const NavBar = () => {
   return (
@@ -62,7 +62,7 @@ export const NavBar = () => {
           </div>
           {/* Account Future */}
           <div className="relative">
-            <Profile />
+            <ProfileMenu />
           </div>
         </div>
       </div>

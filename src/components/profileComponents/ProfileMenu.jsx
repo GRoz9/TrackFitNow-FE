@@ -14,8 +14,9 @@ import {
 import Logout from "@mui/icons-material/Logout";
 import Settings from "@mui/icons-material/Settings";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import Link from "next/link";
 
-export const Profile = () => {
+export const ProfileMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -42,7 +43,7 @@ export const Profile = () => {
   return (
     <div>
       <Box>
-        <Tooltip title="Account Settings">
+        <Tooltip title="Account Menu">
           <IconButton
             onClick={handleClick}
             size="small"
@@ -74,14 +75,14 @@ export const Profile = () => {
           <ListItemIcon>
             <ManageAccountsIcon fontSize="small" />
           </ListItemIcon>
-          Your Profile
+          <Link href="/profile">Your Profile</Link>
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
-          Settings
+          <Link href="/settings">Settings</Link>
         </MenuItem>
         <MenuItem onClick={logout}>
           <ListItemIcon>

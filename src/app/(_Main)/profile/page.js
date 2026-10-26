@@ -3,7 +3,7 @@ import React from "react";
 import { useUser } from "../context/UserContext";
 import Skeleton from "@mui/material/Skeleton";
 
-import { HistoryPage } from "@/components/historyComponents/HistoryPage";
+import { ProfilePage } from "@/components/profileComponents/ProfilePage";
 // import { HistoryPage } from "../../../components/historyComponents/historyPage";
 
 export default function Home() {
@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div className="flex max-lg:flex-col gap-8">
-        <HistoryPage
+        <ProfilePage
           profile={user?.UserProfile}
           weeklyLogs={user?.WeeklyLogs}
         />
