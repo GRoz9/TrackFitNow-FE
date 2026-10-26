@@ -3,6 +3,8 @@ import React from "react";
 import { useUser } from "../context/UserContext";
 import Skeleton from "@mui/material/Skeleton";
 
+import WeightPage from "@/components/weightComponents/roughtDesign";
+
 export default function Home() {
   const { user, loading, error } = useUser();
 
@@ -22,7 +24,7 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
       <div className="flex max-lg:flex-col gap-8">
-        <main>Weight</main>
+        <WeightPage profile={user?.UserProfile} weeklyLogs={user?.WeeklyLogs} />
       </div>
     </div>
   );

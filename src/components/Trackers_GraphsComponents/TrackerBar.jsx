@@ -22,7 +22,7 @@ export const BarTracker = (props) => {
     progress = goal > 0 ? (current / goal) * 100 : 0;
   }
 
-  progress = Math.max(0, Math.min(progress, 100)); // clamp between 0–100
+  progress = Math.max(-100, Math.min(progress, 100)); // clamp between -100–100
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", zIndex: 0 }}>
@@ -42,7 +42,7 @@ export const BarTracker = (props) => {
         <Typography variant="body2" sx={{ color: "text.primary" }}>
           {percentage
             ? progress.toFixed(2) + "%"
-            : current + "" + props.labels[1] ?? ""}
+            : (current + "" + props.labels[1] ?? "")}
         </Typography>
       </Box>
     </Box>
